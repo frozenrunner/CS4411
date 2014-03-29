@@ -39,7 +39,6 @@ public class Importer
 	{
 		//startTime = System.currentTimeMillis();
 		mapReduceDB();
-		loadData();
 	}
 
 	/**
@@ -122,16 +121,7 @@ public class Importer
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	/**
-	 * Method to load data into the JSON creator
-	 */
-	private void loadData()
-	{
-		
-		DataLoader dataLoader = new DataLoader("MapReduceResult.txt");
-		dataLoader.writeJSON();
-	}
+
 	
 	public static void main(String[] args) 
 	{

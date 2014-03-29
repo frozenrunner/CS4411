@@ -20,6 +20,7 @@ import com.mongodb.DBObject;
  */
 public class Importer
 {
+	private static final boolean DEBUG = true;
 	private static final String CONNECTIONSTRING = "localhost";
 	
 	private DBCollection coll;	//DBcollection used
@@ -58,18 +59,26 @@ public class Importer
 		{
 			
 			mongoClient = new Mongo(CONNECTIONSTRING);
-			db = mongoClient.getDB("myDB");
-			coll = db.getCollection("UWONetworkMap");
+			db = mongoClient.getDB("mikeDB");
+			coll = db.getCollection("CS4411MapReduce");
 			
 			//zero database
 			coll.remove(new BasicDBObject());
-			reader = new Scanner(inputFile).useDelimiter("\u0000");
+			reader = new Scanner(inputFile);
 			while(reader.hasNext())
 			{
 				line = reader.next();
-				String[] inputLine = line.split("\t");
-				double byteSize = Double.parseDouble(inputLine[0]);
-				doc = new BasicDBObject("size_in_bytes", byteSize).append("owner", inputLine[1] ).append("group", inputLine[2]).append("last_mod_date", inputLine[3]).append("path", inputLine[4]);
+				if (DEBUG)
+					System.out.println(line);
+				
+				String[] inputLine = line.split(",");
+				if (DEBUG)
+				{
+					for(int i=0; i<inputLine.length; i++)
+						System.out.println(inputLine[i]);
+				}
+				double salary = Double.parseDouble(inputLine[4]);
+				doc = new BasicDBObject("yearID", inputLine[0]).append("teamID", inputLine[1] ).append("lgID", inputLine[2]).append("playerID", inputLine[3]).append("salary", salary);
 				coll.insert(doc);
 			}
 			reader.close();
@@ -96,8 +105,8 @@ public class Importer
 		FileWriter fstream;
 		BufferedWriter out = null;
 		
-		String mapFunction = "function(){ var line = this.path; if (line.charAt(0) == \'/\') { emit(\"/\", this.size_in_bytes); line = line.substring(1,line.length); var arrayOfStrings = line.split(\"/\"); if (arrayOfStrings.length > 1) { var temp = \"/\" + arrayOfStrings[0]; for (var i = arrayOfStrings.length-1; i > 0; i--) { for (var j = 1; j < i; j++) { temp = temp + \"/\" + arrayOfStrings[j]; } emit(temp, this.size_in_bytes); temp = \"/\" + arrayOfStrings[0]; }}}}";
-		String reduceFunction = "function(keyPath, sizeSum){ return Array.sum(sizeSum); };";
+		String mapFunction = "function () { emit( this.teamID, this.salary );}";
+		String reduceFunction = "function(keyTeam, salary) { return Array.sum(salary); };";
 		
 		try
 		{
@@ -111,8 +120,6 @@ public class Importer
 				out.write(o.toString());
 				out.write("\n");
 			}
-			//endTime = System.currentTimeMillis();
-			//long totalTime = endTime-startTime;
 			
 			out.close();
 		}
@@ -125,7 +132,7 @@ public class Importer
 	
 	public static void main(String[] args) 
 	{
-		Importer processInputFile = new Importer("idx-arion");
+		Importer processInputFile = new Importer("Salaries.csv");
 		processInputFile.run();
 	}
 

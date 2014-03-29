@@ -1,0 +1,6 @@
+All this was done in Eclipse on Windows, if it makes any difference
+Compiling and running the code should take the input file "arion.bin" and write the result of MapReduce to MapReduceResults.txt
+It immediately takes the ouptput file and runs it through the class used to create the JSON file that is used by visualizer.html to visualize the data using D3.js
+
+MongodDB has to be running on the host system before you will be able to successfully run the program.
+If I understand it correctly, it shouldn't matter where it is installed. Once it is running the program will access it from 'localhost'

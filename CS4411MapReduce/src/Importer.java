@@ -20,12 +20,12 @@ import com.mongodb.DBObject;
  */
 public class Importer
 {
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static final String CONNECTIONSTRING = "localhost";
 	
 	private DBCollection coll;	//DBcollection used
-	//private long startTime;
-	//private long endTime;
+	private long startTime;
+	private long endTime;
 	
 	/**
 	 * Constructor to initialize the program to pull input data.
@@ -38,7 +38,7 @@ public class Importer
 	
 	private void run()
 	{
-		//startTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 		mapReduceDB();
 	}
 
@@ -122,6 +122,8 @@ public class Importer
 			}
 			
 			out.close();
+			endTime = System.currentTimeMillis();
+			System.out.println(endTime - startTime);
 		}
 		catch (IOException e)
 		{
@@ -129,11 +131,9 @@ public class Importer
 		}
 	}
 
-	
 	public static void main(String[] args) 
 	{
 		Importer processInputFile = new Importer("Salaries.csv");
 		processInputFile.run();
 	}
-
 }

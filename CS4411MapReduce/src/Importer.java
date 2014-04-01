@@ -123,7 +123,8 @@ public class Importer
 			
 			out.close();
 			endTime = System.currentTimeMillis();
-			System.out.println(endTime - startTime);
+			long totalTime = endTime - startTime;
+			System.out.println("Running time: " + totalTime + " milliseconds");
 		}
 		catch (IOException e)
 		{

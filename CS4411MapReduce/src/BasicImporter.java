@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 public class BasicImporter {
 
-	private static final boolean DEBUG = false;
 	private String[][] fileLine;
 	private long startTime;
 	private long endTime;
@@ -67,12 +66,16 @@ public class BasicImporter {
 			out = new BufferedWriter(fstream);
 			for (int i = 0; i<fileLine.length; i++)
 			{
-				out.write("Team: " + fileLine[i][0] + " | " + "Salary: " + fileLine[i][1]);
-				out.write("\n");
+				if (fileLine[i][0] != null)
+				{
+					out.write("{ \"_id\" : \"" + fileLine[i][0] + "\" , " + "\"value\" : " + fileLine[i][1] + "}");
+					out.write("\n");
+				}
 			}				
 				out.close();
 				endTime = System.currentTimeMillis();
-				System.out.println(endTime-startTime);
+				long totalTime = endTime - startTime;
+				System.out.println("Running time: " + totalTime + " milliseconds");
 		}
 		catch(Exception e)
 		{
